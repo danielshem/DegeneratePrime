@@ -58,7 +58,7 @@ function splitText(text, maxLength = 2000) {
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName('ask')
+    .setName('askg') // Changed to askg temporarily while testing this with another bot
     .setDescription('Asks a question to the snarky, all-knowing AI.')
     .addStringOption(option =>
       option.setName('prompt')
