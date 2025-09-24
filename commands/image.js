@@ -5,7 +5,7 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName('image')
+    .setName('imageg') // temporary update to imageg while testing this alongside another bot
     .setDescription('Generates an image using DALL-E 3.')
     .addStringOption(option =>
       option.setName('prompt')
