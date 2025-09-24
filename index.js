@@ -1,16 +1,11 @@
-require('dotenv').config();
+const functions = require('firebase-functions');
+const admin = require('firebase-admin');
 const fs = require('fs');
 const path = require('path');
-const http = require('http');
 const { Client, GatewayIntentBits, Collection } = require('discord.js');
 
-// --- Web server for Render health checks ---
-const server = http.createServer((req, res) => {
-  res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.end('Bot is alive!');
-});
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
+// Initialize Firebase Admin SDK
+admin.initializeApp();
 
 // --- Discord Client Setup ---
 const client = new Client({
@@ -86,5 +81,18 @@ client.on('messageCreate', async message => {
   }
 });
 
-// --- Client Login ---
-client.login(process.env.DISCORD_TOKEN);
+
+// --- Firebase Cloud Function ---
+// This function will be triggered by an HTTP request.
+// We will log in to Discord only when the function is invoked.
+exports.discordBot = functions.https.onRequest(async (req, res) => {
+  // Use Firebase's runtime configuration for secrets
+  const discordToken = functions.config().discord.token;
+
+  if (!client.isReady()) {
+    await client.login(discordToken);
+  }
+
+  // A simple response to let us know the function is alive when we hit its URL
+  res.send('Function is ready. Bot is connecting to Discord...');
+});
